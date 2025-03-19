@@ -15,6 +15,7 @@ using System.Text;
 
 namespace DSLH20250319.AppWebMVC.Controllers
 {
+    [Authorize(Roles = "ADMINISTRADOR")]
     public class UserController : Controller
     {
         private readonly Test20250319DbContext _context;
