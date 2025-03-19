@@ -15,7 +15,6 @@ using System.Text;
 
 namespace DSLH20250319.AppWebMVC.Controllers
 {
-    [Authorize(Roles = "ADMINISTRADOR")]
     public class UserController : Controller
     {
         private readonly Test20250319DbContext _context;
@@ -130,16 +129,10 @@ namespace DSLH20250319.AppWebMVC.Controllers
             }
         }
 
-
-
-
         private bool UsuarioExists(int id)
         {
             return _context.Users.Any(e => e.UserId == id);
         }
-
-
-
 
         [HttpPost]
         [ValidateAntiForgeryToken]
