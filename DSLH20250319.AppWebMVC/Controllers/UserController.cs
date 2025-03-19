@@ -110,6 +110,41 @@ namespace DSLH20250319.AppWebMVC.Controllers
             }
         }
 
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Perfil(int id, [Bind("UserId,Username,Email,Estatus,Role")] User usuario)
+        {
+            if (id != usuario.UserId)
+            {
+                return NotFound();
+            }
+            var usuarioUpdate = await _context.Users
+                 .FirstOrDefaultAsync(m => m.UserId == usuario.UserId);
+            try
+            {
+                usuarioUpdate.Username = usuario.Username;
+                usuarioUpdate.Email = usuario.Email;
+                usuarioUpdate.Estatus = usuario.Estatus;
+                usuarioUpdate.Role = usuario.Role;
+                _context.Update(usuarioUpdate);
+                await _context.SaveChangesAsync();
+                return RedirectToAction("Index", "Home");
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!UsuarioExists(usuario.UserId))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    return View(usuario);
+                }
+            }
+        }
+
+
         private string CalcularHashMD5(string input)
         {
             using (MD5 md5 = MD5.Create())
@@ -131,38 +166,7 @@ namespace DSLH20250319.AppWebMVC.Controllers
             return _context.Users.Any(e => e.UserId == id);
         }
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Perfil(int id, [Bind("Id,Nombre,Email,Estatus,Rol")] User usuario)
-        {
-            if (id != usuario.UserId)
-            {
-                return NotFound();
-            }
-            var usuarioUpdate = await _context.Users
-                 .FirstOrDefaultAsync(m => m.UserId == usuario.UserId);
-            try
-            {
-                usuarioUpdate.Username = usuario.Username;
-                usuarioUpdate.Email = usuario.Email;
-                usuarioUpdate.Estatus = usuario.Estatus;
-                usuarioUpdate.Role= usuario.Role;
-                _context.Update(usuarioUpdate);
-                await _context.SaveChangesAsync();
-                return RedirectToAction("Index", "Home");
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!UsuarioExists(usuario.UserId))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    return View(usuario);
-                }
-            }
-        }
+     
 
 
 
